@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require 'debug'
 class BlogsController < ApplicationController
   skip_before_action :authenticate_user!, only: %i[index show]
 
@@ -60,6 +60,7 @@ class BlogsController < ApplicationController
   def blog_params
     permitted_params = params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
     permitted_params[:random_eyecatch] = false unless current_user.premium?
+    permitted_params[:content] = ERB::Util.html_escape(permitted_params[:content]) if permitted_params[:content]
     permitted_params
   end
 
