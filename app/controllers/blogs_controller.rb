@@ -54,13 +54,11 @@ class BlogsController < ApplicationController
   end
 
   def blog_params
-    permitted_params = if current_user.premium?
-                         params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
-                       else
-                         params.require(:blog).permit(:title, :content, :secret)
-                       end
-    permitted_params[:content] = ERB::Util.html_escape(permitted_params[:content]) if permitted_params[:content]
-    permitted_params
+    if current_user.premium?
+      params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
+    else
+      params.require(:blog).permit(:title, :content, :secret)
+    end
   end
 
   def set_correct_user_blog
