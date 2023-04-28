@@ -54,8 +54,11 @@ class BlogsController < ApplicationController
   end
 
   def blog_params
-    permitted_params = params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
-    permitted_params[:random_eyecatch] = false unless current_user.premium?
+    permitted_params = if current_user.premium?
+                         params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
+                       else
+                         params.require(:blog).permit(:title, :content, :secret)
+                       end
     permitted_params[:content] = ERB::Util.html_escape(permitted_params[:content]) if permitted_params[:content]
     permitted_params
   end
