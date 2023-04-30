@@ -45,12 +45,7 @@ class BlogsController < ApplicationController
   private
 
   def set_blog
-    blog = if current_user
-             Blog.where('(user_id = ? AND id = ?) OR (secret = false AND id = ?)', current_user.id, params[:id], params[:id])
-           else
-             Blog.where('secret = false AND id = ?', params[:id])
-           end
-    @blog = blog.first!
+    @blog = Blog.new.fetch(current_user, params[:id])
   end
 
   def blog_params
