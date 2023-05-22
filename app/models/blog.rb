@@ -15,12 +15,8 @@ class Blog < ApplicationRecord
 
   scope :default_order, -> { order(id: :desc) }
 
-  scope :fetch_user_blog, lambda { |user, blog_id|
-    where('user_id = ? AND id = ?', user.id, blog_id)
-  }
-
-  scope :fetch_not_secret_blog, lambda { |blog_id|
-    where('secret = false AND id = ?', blog_id)
+  scope :viewable, lambda { |user|
+    where('secret = false OR user_id = ?', user&.id)
   }
 
   def owned_by?(target_user)
@@ -28,11 +24,6 @@ class Blog < ApplicationRecord
   end
 
   def fetch(user, blog_id)
-    blog = if user
-             Blog.fetch_user_blog(user, blog_id).or(Blog.fetch_not_secret_blog(blog_id))
-           else
-             Blog.fetch_not_secret_blog(blog_id)
-           end
-    blog.first!
+    Blog.viewable(user).find(blog_id)
   end
 end
