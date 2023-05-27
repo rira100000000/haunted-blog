@@ -45,7 +45,7 @@ class BlogsController < ApplicationController
   private
 
   def set_blog
-    @blog = Blog.new.fetch(current_user, params[:id])
+    @blog = Blog.viewable(current_user).find(params[:id])
   end
 
   def blog_params

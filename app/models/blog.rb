@@ -22,8 +22,4 @@ class Blog < ApplicationRecord
   def owned_by?(target_user)
     user == target_user
   end
-
-  def fetch(user, blog_id)
-    Blog.viewable(user).find(blog_id)
-  end
 end
