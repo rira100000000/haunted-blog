@@ -10,7 +10,7 @@ class BlogsController < ApplicationController
   end
 
   def show
-    set_blog
+    @blog = Blog.viewable(current_user).find(params[:id])
   end
 
   def new
@@ -44,10 +44,6 @@ class BlogsController < ApplicationController
   end
 
   private
-
-  def set_blog
-    @blog = Blog.viewable(current_user).find(params[:id])
-  end
 
   def blog_params
     permitted_params = %i[title content secret]
